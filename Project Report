@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\doublespacing
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\title{MATH 376 - Numerical Analysis Project}
+\author{Lauren Walker and Julia Colbert}
+\date{\today}
+\maketitle
+
+\section*{Introduction}
+[why we chose new york and covid]
+
+\section*{Methods}
+[theory behind what we're doing, with equations]
+
+\section*{Data }
+
+
+\section*{Results}
+
+
+\section*{Discussion}
+[what we learned, limitations]
+
+
+
+
+
+
+
+
+\end{document}
