@@ -7,6 +7,8 @@
 \usepackage{booktabs}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{indentfirst}
+\usepackage{url}
 \doublespacing
 \geometry{a4paper, margin=1in}
 
@@ -17,13 +19,88 @@
 \date{\today}
 \maketitle
 
-\section*{Introduction}
-[why we chose new york and covid]
+\section{Introduction}
+Mathematical models are often used in epidemiology to understand how infectious diseases spread through a population.  One of the most widely used models is the SIR model, which separates a population into susceptible, infectious, and recovered groups.  
 
-\section*{Methods}
-[theory behind what we're doing, with equations]
+In this project, we investigated how well the SIR model can describe the spread of COVID-19 in New York State.  We chose New York because it experienced a well-documented and significant early outbreak of COVID-19, and the availability of detailed, publicly accessible statewide data makes it well-suited for quantitative analysis.  Using this data, we numerically solved the SIR system using the Euler’s method and estimated the model parameters using least squares.  We then compared the model’s output to observed COVID-19 case data to assess the model’s accuracy and limitations.
 
-\section*{Data }
+\subsection*{SIR Model}
+The SIR model is a mathematical model used in epidemiology to describe and predict the spread of infectious diseases.  To start, it divides the population into three groups: $S(t)$ (susceptible), $I(t)$ (infectious), and $R(t)$ (recovered).  The total population is assumed constant:
+\[
+N = S(t) + I(t) + R(t).
+\]
+
+The model describes how individuals move between these groups using a system of differential equations:
+\[
+\frac{dS}{dt} = -\beta \frac{S(t) I(t)}{N},
+\]
+\[
+\frac{dI}{dt} = \beta \frac{S(t) I(t)}{N} - \gamma I(t),
+\]
+\[
+\frac{dR}{dt} = \gamma I(t).
+\]
+\noindent where $\beta$ represents the transmission rate, describing how frequently susceptible and infectious individuals interact to produce new infections, and $\gamma$ represents the recovery rate, describing the rate at which infectious individuals recover and move into the recovered group.
+
+The susceptible population decreases as susceptible individuals come into contact with infectious individuals and become infected.  The infectious population increases through new infections and decreases as individuals recover.  The recovered population increases as infectious individuals move out of the infectious group.
+
+We chose to use the SIR model because it provides a simple framework for studying disease spread using only a small number of variables and parameters.  However, this simplicity comes from several underlying assumptions:
+\begin{itemize}
+    \item \textbf{Closed population:} The total population $N$ remains constant over time, with no births, deaths, or migration.
+    
+    \item \textbf{Homogeneous mixing:} Individuals interact uniformly, meaning every susceptible individual has an equal chance of coming into contact with an infectious individual.
+    
+    \item \textbf{Constant parameters:} The transmission rate $\beta$ and recovery rate $\gamma$ are assumed to remain constant over time.
+    
+    \item \textbf{Permanent immunity:} Individuals who recover from the disease are assumed to gain complete and lasting immunity.
+    \end{itemize}
+
+
+Although COVID-19 is more complicated than the assumptions of a basic SIR model, the model is still useful as a first approximation, especially during the early stage of an outbreak.
+
+\section{Data}
+We used the New York Statewide COVID-19 Testing dataset from Health Data NY \cite{NYCovidData}.  This dataset provides daily information on the number of new positive COVID-19 tests across New York State.  We chose this dataset because it is publicly available and consistently reported, making it suitable for comparing model predictions to real-world data.
+
+A limitation of the dataset is that it does not directly measure the number of currently infectious individuals.  Instead, it reports daily new positive tests.  Therefore, in this project, we use reported positives as a proxy for infection prevalence, recognizing that reported case counts depend on testing availability, reporting practices, and delays. As a result, the comparison between the model and the data is approximate rather than exact.
+
+
+
+\section{Methods}
+The New York State COVID-19 dataset was loaded and cleaned prior to analysis.  We restricted the dataset to statewide observations to align with the single-population assumption of the SIR model.
+
+\subsection*{Numerical Method: Euler's Method}
+
+The SIR system does not generally have a closed-form solution for arbitrary parameter values, so we used Euler’s method to approximate the solution numerically.  Euler’s method replaces the continuous derivatives with small step-by-step updates over time.  Using a time step of $\Delta t = 1$ day, the system is updated as follows:
+\[
+S_{n+1} = S_n - \Delta t \cdot \beta \frac{S_n I_n}{N},
+\]
+\[
+I_{n+1} = I_n + \Delta t \left( \beta \frac{S_n I_n}{N} - \gamma I_n \right),
+\]
+\[
+R_{n+1} = R_n + \Delta t \cdot \gamma I_n.
+\]
+
+These equations generate approximate values of the susceptible, infectious, and recovered populations for each day in the study period.
+
+From the model, the predicted number of new infections per day is given by:
+\[
+\hat{C}_n = \beta \frac{S_n I_n}{N}.
+\]
+
+\subsection*{Parameter Estimation: Least Squares}
+
+The parameters $\beta$ and $\gamma$ are not known in advance and are estimated using a least squares approach. For each pair of parameter values $(\beta, \gamma)$, the SIR model is simulated using Euler’s method to generate predicted daily new infections.
+
+We then compare the predicted values to the observed daily case data by minimizing the sum of squared errors:
+\[
+\text{SSE}(\beta, \gamma) = \sum_{n=1}^{m} \left( C_n - \hat{C}_n \right)^2,
+\]
+where $C_n$ represents observed daily cases and $\hat{C}_n$ represents model-predicted cases.
+
+A numerical optimization algorithm is used to find the values of $\beta$ and $\gamma$ that minimize this error, producing the best fit between the model and the observed data.
+
+
 
 
 \section*{Results}
@@ -34,9 +111,19 @@
 
 
 
+\begin{thebibliography}{9}
 
+\bibitem{NYCovidData}
+New York State Department of Health,
+\textit{New York State Statewide COVID-19 Testing Dataset},
+Health Data NY,
+\url{https://health.data.ny.gov/Health/New-York-State-Statewide-COVID-19-Testing/jvfi-ffup}
 
+\end{thebibliography}
 
+\newpage
+\appendix
+\section*{Appendix:}
 
 
 \end{document}
