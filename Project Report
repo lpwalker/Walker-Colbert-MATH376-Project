@@ -59,12 +59,13 @@ We chose to use the SIR model because it provides a simple framework for studyin
 Although COVID-19 is more complicated than the assumptions of a basic SIR model, the model is still useful as a first approximation, especially during the early stage of an outbreak.
 
 \section{Data}
+\subsection*{Data}
+We used the New York State Statewide COVID-19 Testing dataset from Health Data NY \cite{NYCovidData}.  This dataset provides daily information on the number of new positive COVID-19 tests across New York State.  We chose this dataset because it is publicly available, consistently reported, and captures a well-documented outbreak, making it suitable for comparing model predictions to real-world data.
 
-We used COVID-19 case data from the COVID-19 Data Hub \cite{covidhub}.  This dataset aggregates official government-reported COVID-19 data into a unified and standardized format suitable for epidemiological analysis.
+For this project, we focused on the Omicron wave in New York State, specifically from December 1, 2021 to February 15, 2022.  This period captures a distinct surge in infections and allows the use of a single-wave SIR model.
 
-The data was organized as a time series of confirmed COVID-19 cases.  For this project, we focused on the Omicron wave in New York State, specifically from December 1, 2021 to February 15, 2022.  This period captures a distinct surge in infections and allows the use of a single-wave SIR model.
 
-A limitation of the dataset is that it does not directly measure the number of currently infectious individuals, as it reports confirmed case counts rather than active infections.  As a result, additional processing is required to construct quantities that are comparable to the compartments of the SIR model.  This limitation motivates the construction of an estimated infectious population in the methods that follow.
+A limitation of the dataset is that it does not directly measure the number of currently infectious individuals.  Instead, it reports daily new positive tests.  Therefore, in this project, we use reported positives as a proxy for infection prevalence, recognizing that reported case counts depend on testing availability, reporting practices, and delays.  As a result, the comparison between the model and the data is approximate rather than exact.
 
 
 \section{Methods}
@@ -124,11 +125,11 @@ Future work could extend this model by incorporating time-varying parameters or 
 
 \begin{thebibliography}{9}
 
-\bibitem{covidhub}
-Emanuele Guidotti and David Ardia,
-\textit{COVID-19 Data Hub},
-Journal of Open Source Software, 5(51), 2376 (2020).
-\url{https://doi.org/10.21105/joss.02376}
+\bibitem{NYCovidData}
+New York State Department of Health,
+\textit{New York State Statewide COVID-19 Testing Dataset},
+Health Data NY,
+\url{https://health.data.ny.gov/Health/New-York-State-Statewide-COVID-19-Testing/jvfi-ffup}
 
 \end{thebibliography}
 
